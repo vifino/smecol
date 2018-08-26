@@ -1,0 +1,2 @@
+#!/bin/sh
+printf "Congratulations, you coded worth %s mL of your favourite beverage from your boss.\n" $(cat `find . -name '*.[ch]'` | wc -l)

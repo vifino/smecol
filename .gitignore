@@ -1,0 +1,8 @@
+# Editor Junk
+# Emacs
+.#*
+
+# Objects
+*.o
+*.so
+lib*.so*
