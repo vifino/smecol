@@ -3,8 +3,12 @@
 #include "../include/smecol/smecol.h"
 #include <stdlib.h>
 
+// Backends
+#include "backends/tcp.h"
+
 int smecol_bootstrap(void) {
-	// As of right now, we have no need to do anything at all.
+	// As of right now, we have no need to do much at all.
+	smecol_tcp_register();
 	return 0;
 }
 

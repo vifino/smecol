@@ -39,7 +39,7 @@ size_t smecol_available(smecol_ctx* ctx) {
 // Sending and receiving
 int smecol_send(smecol_ctx* ctx, void* buf, size_t len) {
 	// Get chain overhead to allocate a properly sized buffer.
-	size_t blen = len + smecol_chain_overhead(ctx, len);
+	size_t blen = len + smecol_chain_overhead(ctx, len) + ctx->backend.overhead;
 	void* bbuf = smecol_alloc(ctx, blen);
 
 	// Unfortunately, we have to copy here to avoid
@@ -50,7 +50,7 @@ int smecol_send(smecol_ctx* ctx, void* buf, size_t len) {
 	// just plain awful. So copying it is.
 	memcpy((byte*) bbuf + ctx->offset, buf, len);
 
-	smecol_chain_apply(ctx, bbuf, len);
+	smecol_chain_apply(ctx, (byte*) bbuf + ctx->backend.offset, len);
 	int ret = ctx->backend.send(ctx->backend.bctx, bbuf, blen);
 
 	smecol_free(ctx, bbuf);

@@ -6,7 +6,7 @@ VERSION=0.1
 FLAGS := -pedantic -Wall -O2
 
 SO_FILE ?="lib${PROJECT}.so.${VERSION}"
-OBJS := src/${PROJECT}.o src/alloc.o src/chain.o src/ctx.o src/modules.o
+OBJS := src/${PROJECT}.o src/alloc.o src/chain.o src/ctx.o src/modules.o src/backends/tcp.o
 
 all: ${SO_FILE}
 

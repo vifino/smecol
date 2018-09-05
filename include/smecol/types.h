@@ -5,11 +5,11 @@
 
 #include <stddef.h>
 
-#ifdef DEBUG
-
 #include <stdio.h>
-#define debug(...) fprintf(stderr, __VA_ARGS__)
+#define eprintf(...) fprintf(stderr, __VA_ARGS__)
 
+#ifdef DEBUG
+#define debug(...) fprintf(stderr, __VA_ARGS__)
 #endif
 
 #define MAX_BACKENDS 16
@@ -26,20 +26,25 @@ typedef struct {
 	char* name;
 	smecol_fctx fctx;
 
+	int (*apply)(smecol_fctx fctx, void* buffer, size_t* size);
+	int (*unapply)(smecol_fctx fctx, void* buffer, size_t* size);
+
 	smecol_fctx (*init)(void* arg);
 	void (*deinit)(smecol_fctx fctx);
 
 	int (*get_overhead)(smecol_fctx fctx, size_t size);
 	size_t offset;
-
-	int (*apply)(smecol_fctx fctx, void* buffer, size_t* size);
-	int (*unapply)(smecol_fctx fctx, void* buffer, size_t* size);
 } smecol_filter;
 
 typedef struct {
 	char* name;
 	smecol_bctx bctx;
 	size_t max_size;
+	size_t offset;
+	size_t overhead;
+
+	void* (*alloc)(smecol_bctx bctx, size_t size);
+	void (*free)(smecol_bctx bctx, void*);
 
 	smecol_bctx (*init)(void* arg);
 	void (*deinit)(smecol_bctx bctx);
@@ -50,11 +55,8 @@ typedef struct {
 	int (*send)(smecol_bctx bctx, void* buffer, size_t size);
 
 	void* (*readb)(smecol_bctx bctx, size_t* size);
-	void* (*read)(smecol_bctx bctx, size_t* size, int msec_timeout);
+	void* (*read)(smecol_bctx bctx, size_t* size, uint msec_timeout);
 	size_t (*available)(smecol_bctx bctx);
-
-	void* (*alloc)(smecol_bctx bctx, size_t size);
-	void (*free)(smecol_bctx bctx, void*);
 } smecol_backend;
 
 // SMeCoL context
