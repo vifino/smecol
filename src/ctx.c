@@ -37,7 +37,7 @@ size_t smecol_available(smecol_ctx* ctx) {
 }
 
 // Sending and receiving
-int smecol_send(smecol_ctx* ctx, void* buf, size_t len) {
+int smecol_send(smecol_ctx* ctx, void* to, void* buf, size_t len) {
 	// Get chain overhead to allocate a properly sized buffer.
 	size_t blen = len + smecol_chain_overhead(ctx, len) + ctx->backend.overhead;
 	void* bbuf = smecol_alloc(ctx, blen);
@@ -51,24 +51,24 @@ int smecol_send(smecol_ctx* ctx, void* buf, size_t len) {
 	memcpy((byte*) bbuf + ctx->offset, buf, len);
 
 	smecol_chain_apply(ctx, (byte*) bbuf + ctx->backend.offset, len);
-	int ret = ctx->backend.send(ctx->backend.bctx, bbuf, blen);
+	int ret = ctx->backend.send(ctx->backend.bctx, to, bbuf, blen);
 
 	smecol_free(ctx, bbuf);
 	return ret;
 }
 
-void* smecol_readb(smecol_ctx* ctx, size_t* size) {
+void* smecol_readb(smecol_ctx* ctx, void** from, size_t* size) {
 	// readb/read returns an allocated buffer.
 	// The user needs to smecol_free it later.
-	void* msg = ctx->backend.readb(ctx->backend.bctx, size);
+	void* msg = ctx->backend.readb(ctx->backend.bctx, from, size);
 	smecol_chain_unapply(ctx, msg, *size);
 	return msg;
 }
 
-void* smecol_read(smecol_ctx* ctx, size_t* size, uint msec_timeout) {
+void* smecol_read(smecol_ctx* ctx, void** from, size_t* size, uint msec_timeout) {
 	// readb/read returns an allocated buffer.
 	// The user needs to smecol_free it later.
-	void* msg = ctx->backend.read(ctx->backend.bctx, size, msec_timeout);
+	void* msg = ctx->backend.read(ctx->backend.bctx, from, size, msec_timeout);
 	smecol_chain_unapply(ctx, msg, *size);
 	return msg;
 }

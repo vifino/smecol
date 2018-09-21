@@ -5,13 +5,6 @@
 
 #include <stddef.h>
 
-#include <stdio.h>
-#define eprintf(...) fprintf(stderr, __VA_ARGS__)
-
-#ifdef DEBUG
-#define debug(...) fprintf(stderr, __VA_ARGS__)
-#endif
-
 #define MAX_BACKENDS 16
 #define MAX_FILTERS 32
 #define MAX_CTX_FILTERS 8
@@ -52,10 +45,10 @@ typedef struct {
 	int (*connect)(smecol_bctx bctx);
 	void (*disconnect)(smecol_bctx bctx);
 
-	int (*send)(smecol_bctx bctx, void* buffer, size_t size);
+	int (*send)(smecol_bctx bctx, void* to, void* buffer, size_t size);
 
-	void* (*readb)(smecol_bctx bctx, size_t* size);
-	void* (*read)(smecol_bctx bctx, size_t* size, uint msec_timeout);
+	void* (*readb)(smecol_bctx bctx, void** from, size_t* size);
+	void* (*read)(smecol_bctx bctx, void** from, size_t* size, uint msec_timeout);
 	size_t (*available)(smecol_bctx bctx);
 } smecol_backend;
 
