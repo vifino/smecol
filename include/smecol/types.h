@@ -25,16 +25,12 @@ typedef struct {
 	smecol_fctx (*init)(void* arg);
 	void (*deinit)(smecol_fctx fctx);
 
-	int (*get_overhead)(smecol_fctx fctx, size_t size);
 	size_t offset;
 } smecol_filter;
 
 typedef struct {
 	char* name;
 	smecol_bctx bctx;
-	size_t max_size;
-	size_t offset;
-	size_t overhead;
 
 	void* (*alloc)(smecol_bctx bctx, size_t size);
 	void (*free)(smecol_bctx bctx, void*);
@@ -44,6 +40,10 @@ typedef struct {
 
 	int (*connect)(smecol_bctx bctx);
 	void (*disconnect)(smecol_bctx bctx);
+
+	size_t (*get_max_size)(smecol_bctx bctx, void* to);
+	size_t (*get_overhead)(smecol_fctx fctx, void* to, size_t size);
+	size_t (*get_offset)(smecol_fctx fctx, void* to, size_t size);
 
 	int (*send)(smecol_bctx bctx, void* to, void* buffer, size_t size);
 

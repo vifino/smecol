@@ -5,8 +5,8 @@ VERSION=0.1
 
 FLAGS := -pedantic -Wall -Wextra -O2
 
-SO_FILE ?="lib${PROJECT}.so.${VERSION}"
-OBJS := src/${PROJECT}.o src/alloc.o src/chain.o src/ctx.o src/modules.o src/backends/tcp.o
+SO_FILE ?= "lib${PROJECT}.so.${VERSION}"
+OBJS := src/${PROJECT}.o src/alloc.o src/chain.o src/ctx.o src/modules.o src/backends/irc.o
 
 all: ${SO_FILE}
 
@@ -16,7 +16,6 @@ all: ${SO_FILE}
 
 ${SO_FILE}: ${OBJS}
 	${CC} -shared -o ${SO_FILE} ${OBJS}
-
 
 # Cleaning
 clean:
